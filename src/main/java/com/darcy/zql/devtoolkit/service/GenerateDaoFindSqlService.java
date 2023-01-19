@@ -1,8 +1,8 @@
 package com.darcy.zql.devtoolkit.service;
 
+import com.darcy.zql.devtoolkit.utils.CommonUtils;
 import com.darcy.zql.devtoolkit.utils.JavaLangUtils;
 import com.darcy.zql.devtoolkit.utils.PsiAnnotationUtils;
-import com.darcy.zql.devtoolkit.utils.CommonUtils;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
@@ -15,9 +15,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class GenerateDaoFindSqlService {
+
+    /**
+     * 匹配findTop100By开头的字符串
+     */
+    private final static Pattern FIND_TOP_PATTERN = Pattern.compile("^findTop(\\d+)By(.+)");
 
     @NotNull
     public String generateFindAql(AnActionEvent event) {
@@ -54,25 +61,31 @@ public class GenerateDaoFindSqlService {
         String methodName = method.getName();
         if (methodName.startsWith("findBy")) {
             String columnsString = StringUtils.substringAfter(methodName, "findBy");
-
             String whereSql = Arrays.stream(columnsString.split("And")).map(this::resolveWhereSql).collect(Collectors.joining(" and "));
-
             return String.format("select * from %s where %s;", tableName, whereSql);
-        } else if (methodName.startsWith("existsBy")) {
-            String columnsString = StringUtils.substringAfter(methodName, "existsBy");
-
-            String whereSql = Arrays.stream(columnsString.split("And")).map(this::resolveWhereSql).collect(Collectors.joining(" and "));
-
-            return String.format("select * from %s where %s limit 1;", tableName, whereSql);
-        } else if (methodName.startsWith("countBy")) {
-            String columnsString = StringUtils.substringAfter(methodName, "countBy");
-
-            String whereSql = Arrays.stream(columnsString.split("And")).map(this::resolveWhereSql).collect(Collectors.joining(" and "));
-
-            return String.format("select count(*) from %s where %s;", tableName, whereSql);
-        } else {
-            throw new RuntimeException("解析方法名异常【" + methodName + "】");
         }
+
+        if (methodName.startsWith("existsBy")) {
+            String columnsString = StringUtils.substringAfter(methodName, "existsBy");
+            String whereSql = Arrays.stream(columnsString.split("And")).map(this::resolveWhereSql).collect(Collectors.joining(" and "));
+            return String.format("select * from %s where %s limit 1;", tableName, whereSql);
+        }
+
+        if (methodName.startsWith("countBy")) {
+            String columnsString = StringUtils.substringAfter(methodName, "countBy");
+            String whereSql = Arrays.stream(columnsString.split("And")).map(this::resolveWhereSql).collect(Collectors.joining(" and "));
+            return String.format("select count(*) from %s where %s;", tableName, whereSql);
+        }
+
+        Matcher matcher = FIND_TOP_PATTERN.matcher(methodName);
+        if (matcher.find()) {
+            String limitSize = matcher.group(1);
+            String columnsString = matcher.group(2);
+            String whereSql = Arrays.stream(columnsString.split("And")).map(this::resolveWhereSql).collect(Collectors.joining(" and "));
+            return String.format("select * from %s where %s limit %s;", tableName, whereSql, limitSize);
+        }
+
+        throw new RuntimeException("解析方法名异常【" + methodName + "】");
     }
 
     private String resolveWhereSql(String columnName) {
