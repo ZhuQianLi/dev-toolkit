@@ -16,15 +16,15 @@
     <description><![CDATA[
       工作中常用的代码生成工具<br/>
       1. Entity生成表结构<br/>
-        1. 支持`@Nullable`<br/>
-        2. 支持`@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"userId", "outerId"})})`<br/>
-        3. 支持`@GeneratedValue(strategy = GenerationType.IDENTITY)`<br/>
-        4. 支持`@Type(type = "Json")`<br/>
+        1. 使用方式：右键带有@Entity注解的类名，选择Generate菜单<br/>
+        2. 支持`@Nullable`<br/>
+        3. 支持`@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"userId", "outerId"})})`<br/>
+        4. 支持`@GeneratedValue(strategy = GenerationType.IDENTITY)`<br/>
+        5. 支持`@Type(type = "Json")`<br/>
       2. EntityDao生成相关查询语句<br/>
-        1. 支持findByXxxx<br/>
-        1. 支持@Query<br/>
-      3. Cmd生成check方法<br/>
-        1. 支持自动生成checkNotNull
+        1. 使用方式：右键Dao结尾的类名，选择Generate菜单<br/>
+        2. 支持findByNameAndAge<br/>
+        3. 支持@Query<br/>
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.
