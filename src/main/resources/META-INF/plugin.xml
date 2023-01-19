@@ -1,0 +1,53 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>com.darcy.zql.dev-toolkit</id>
+
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+    <name>Dev Toolkit</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor email="zhu.qianli@darcytech.com" url="http://www.darcytech.com">darcy</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+    <description><![CDATA[
+      工作中常用的代码生成工具<br/>
+      1. Entity生成表结构<br/>
+        1. 支持`@Nullable`<br/>
+        2. 支持`@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"userId", "outerId"})})`<br/>
+        3. 支持`@GeneratedValue(strategy = GenerationType.IDENTITY)`<br/>
+        4. 支持`@Type(type = "Json")`<br/>
+      2. EntityDao生成相关查询语句<br/>
+        1. 支持findByXxxx<br/>
+        1. 支持@Query<br/>
+      3. Cmd生成check方法<br/>
+        1. 支持自动生成checkNotNull
+  ]]></description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <!-- 额外需要添加的模块依赖 -->
+    <depends>com.intellij.java</depends>
+
+    <!-- Extension points defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <extensions defaultExtensionNs="com.intellij">
+
+    </extensions>
+
+    <actions>
+        <action id="GenerateEntityTableSqlAction" class="com.darcy.zql.devtoolkit.action.GenerateEntityTableSqlAction"
+                text="Entity生成表结构" description="Entity生成表结构">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
+        </action>
+        <action id="GenerateDaoFindSqlAction" class="com.darcy.zql.devtoolkit.action.GenerateDaoFindSqlAction"
+                text="Dao生成相关查询" description="Dao生成相关查询">
+            <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="GenerateEntityTableSqlAction"/>
+        </action>
+    </actions>
+</idea-plugin>
