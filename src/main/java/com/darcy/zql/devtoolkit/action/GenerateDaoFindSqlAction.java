@@ -1,7 +1,7 @@
 package com.darcy.zql.devtoolkit.action;
 
 import com.darcy.zql.devtoolkit.service.GenerateDaoFindSqlService;
-import com.darcy.zql.devtoolkit.utils.Utils;
+import com.darcy.zql.devtoolkit.utils.CommonUtils;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -18,8 +18,8 @@ public class GenerateDaoFindSqlAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
         String findSql = service.generateFindAql(event);
-        Utils.copyToClipboard(findSql);
-        Utils.showMessage(event.getProject(), "生成相关查询成功", "已复制到剪贴板");
+        CommonUtils.copyToClipboard(findSql);
+        CommonUtils.showMessage(event.getProject(), "生成相关查询成功", "已复制到剪贴板");
     }
 
     @Override

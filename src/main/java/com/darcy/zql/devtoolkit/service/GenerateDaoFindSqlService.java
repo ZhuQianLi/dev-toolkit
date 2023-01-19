@@ -1,6 +1,8 @@
 package com.darcy.zql.devtoolkit.service;
 
-import com.darcy.zql.devtoolkit.utils.Utils;
+import com.darcy.zql.devtoolkit.utils.JavaLangUtils;
+import com.darcy.zql.devtoolkit.utils.PsiAnnotationUtils;
+import com.darcy.zql.devtoolkit.utils.CommonUtils;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
@@ -26,14 +28,14 @@ public class GenerateDaoFindSqlService {
 
         List<String> findSqls = new ArrayList<>();
         for (PsiMethod method : psiClass.getOwnMethods()) {
-            if (Utils.existsQueryAnnotation(method)) {
-                String findSql = Utils.extractQueryValue(method);
+            if (PsiAnnotationUtils.existsQuery(method)) {
+                String findSql = PsiAnnotationUtils.extractQueryValue(method);
                 if (findSql != null) {
                     findSqls.add(findSql);
                 } else {
                     findSqls.add("不支持生成相关查询 方法名【" + method.getName() + "】");
                 }
-            } else if (Utils.isDefaultModifier(method)) {
+            } else if (JavaLangUtils.isDefaultModifier(method)) {
                 findSqls.add("不支持生成相关查询 方法名【" + method.getName() + "】");
             } else {
                 findSqls.add(generateFindSqlByMethod(psiClass, method));
@@ -47,7 +49,7 @@ public class GenerateDaoFindSqlService {
         // className: User -> tableName: user
         String className = psiClass.getName();
         String entityName = StringUtils.substringBefore(className, "Dao");
-        String tableName = Utils.lowerCamelToLowerUnderscore(entityName);
+        String tableName = CommonUtils.lowerCamelToLowerUnderscore(entityName);
         // methodName: findByNameAndAge
         String methodName = method.getName();
         if (methodName.startsWith("findBy")) {
@@ -76,45 +78,45 @@ public class GenerateDaoFindSqlService {
     private String resolveWhereSql(String columnName) {
         if (columnName.endsWith("In")) {
             String cname = StringUtils.substringBeforeLast(columnName, "In");
-            return Utils.upperCamelToLowerUnderscore(cname) + " in (?)";
+            return CommonUtils.upperCamelToLowerUnderscore(cname) + " in (?)";
         } else if (columnName.endsWith("NotIn")) {
             String cname = StringUtils.substringBeforeLast(columnName, "NotIn");
-            return Utils.upperCamelToLowerUnderscore(cname) + " not in (?)";
+            return CommonUtils.upperCamelToLowerUnderscore(cname) + " not in (?)";
         } else if (columnName.endsWith("IsTrue")) {
             String cname = StringUtils.substringBeforeLast(columnName, "IsTrue");
-            return Utils.upperCamelToLowerUnderscore(cname) + " = true";
+            return CommonUtils.upperCamelToLowerUnderscore(cname) + " = true";
         } else if (columnName.endsWith("IsFalse")) {
             String cname = StringUtils.substringBeforeLast(columnName, "IsFalse");
-            return Utils.upperCamelToLowerUnderscore(cname) + " = false";
+            return CommonUtils.upperCamelToLowerUnderscore(cname) + " = false";
         } else if (columnName.endsWith("False")) {
             String cname = StringUtils.substringBeforeLast(columnName, "False");
-            return Utils.upperCamelToLowerUnderscore(cname) + " = false";
+            return CommonUtils.upperCamelToLowerUnderscore(cname) + " = false";
         } else if (columnName.endsWith("True")) {
             String cname = StringUtils.substringBeforeLast(columnName, "True");
-            return Utils.upperCamelToLowerUnderscore(cname) + " = false";
+            return CommonUtils.upperCamelToLowerUnderscore(cname) + " = false";
         } else if (columnName.endsWith("GreaterThanEqual")) {
             String cname = StringUtils.substringBeforeLast(columnName, "GreaterThanEqual");
-            return Utils.upperCamelToLowerUnderscore(cname) + " >= ?";
+            return CommonUtils.upperCamelToLowerUnderscore(cname) + " >= ?";
         } else if (columnName.endsWith("LessThanEqual")) {
             String cname = StringUtils.substringBeforeLast(columnName, "LessThanEqual");
-            return Utils.upperCamelToLowerUnderscore(cname) + " <= ?";
+            return CommonUtils.upperCamelToLowerUnderscore(cname) + " <= ?";
         } else if (columnName.endsWith("GreaterThan")) {
             String cname = StringUtils.substringBeforeLast(columnName, "GreaterThan");
-            return Utils.upperCamelToLowerUnderscore(cname) + " > ?";
+            return CommonUtils.upperCamelToLowerUnderscore(cname) + " > ?";
         } else if (columnName.endsWith("LessThan")) {
             String cname = StringUtils.substringBeforeLast(columnName, "GreaterThan");
-            return Utils.upperCamelToLowerUnderscore(cname) + " < ?";
+            return CommonUtils.upperCamelToLowerUnderscore(cname) + " < ?";
         } else if (columnName.endsWith("After")) {
             String cname = StringUtils.substringBeforeLast(columnName, "After");
-            return Utils.upperCamelToLowerUnderscore(cname) + " > ?";
+            return CommonUtils.upperCamelToLowerUnderscore(cname) + " > ?";
         } else if (columnName.endsWith("Before")) {
             String cname = StringUtils.substringBeforeLast(columnName, "Before");
-            return Utils.upperCamelToLowerUnderscore(cname) + " < ?";
+            return CommonUtils.upperCamelToLowerUnderscore(cname) + " < ?";
         } else if (columnName.endsWith("Between")) {
             String cname = StringUtils.substringBeforeLast(columnName, "Between");
-            return Utils.upperCamelToLowerUnderscore(cname) + " between ? and ?";
+            return CommonUtils.upperCamelToLowerUnderscore(cname) + " between ? and ?";
         } else {
-            return Utils.upperCamelToLowerUnderscore(columnName) + " = ?";
+            return CommonUtils.upperCamelToLowerUnderscore(columnName) + " = ?";
         }
     }
 }

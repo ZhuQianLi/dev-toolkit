@@ -1,6 +1,9 @@
 package com.darcy.zql.devtoolkit.service;
 
-import com.darcy.zql.devtoolkit.utils.Utils;
+import com.darcy.zql.devtoolkit.utils.JavaLangUtils;
+import com.darcy.zql.devtoolkit.utils.PsiAnnotationUtils;
+import com.darcy.zql.devtoolkit.utils.PsiDocCommentUtils;
+import com.darcy.zql.devtoolkit.utils.CommonUtils;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -16,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.darcy.zql.devtoolkit.utils.Utils.*;
+import static com.darcy.zql.devtoolkit.utils.CommonUtils.*;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
@@ -36,7 +39,7 @@ public class GenerateEntityTableSqlService {
         tableSql.append(String.format("create table %s (\n", tableName));
 
         for (PsiField field : psiClass.getFields()) {
-            if (isStaticModifier(field)) {
+            if (JavaLangUtils.isStaticModifier(field)) {
                 continue;
             }
             tableSql.append(buildSqlForOneColumn(field));
@@ -56,18 +59,18 @@ public class GenerateEntityTableSqlService {
     }
 
     private String buildTableComment(PsiClass psiClass) {
-        List<String> classComments = extractCommentDescription(psiClass);
+        List<String> classComments = PsiDocCommentUtils.extractCommentDescription(psiClass);
         return classComments.isEmpty() ? EMPTY : String.format("comment='%s'", classComments.get(0));
     }
 
     private String buildSqlForUniqueKey(PsiClass psiClass, String tableName) {
-        List<String> uniqueKey = extractUniqueKey(psiClass);
+        List<String> uniqueKey = PsiAnnotationUtils.extractUniqueKey(psiClass);
         if (uniqueKey.isEmpty()) {
             return EMPTY;
         }
         List<String> tableNameAndColumnNames = Lists.newArrayList(tableName);
         tableNameAndColumnNames.addAll(uniqueKey);
-        String uniqueKeyName = tableNameAndColumnNames.stream().map(Utils::extractWordFirstChar).collect(Collectors.joining("_"));
+        String uniqueKeyName = tableNameAndColumnNames.stream().map(CommonUtils::extractWordFirstChar).collect(Collectors.joining("_"));
 
         String columnNames = uniqueKey.stream().map(k -> String.format("`%s`", lowerCamelToLowerUnderscore(k))).collect(Collectors.joining(","));
         return String.format("unique key `uk_%s` (%s)", uniqueKeyName, columnNames);
@@ -85,9 +88,9 @@ public class GenerateEntityTableSqlService {
 
         String mysqlType = psiTypeToMysqlType(field);
         // 支持`@Nullable`
-        String nullable = existsNullable(field) ? "default null" : "not null";
+        String nullable = PsiAnnotationUtils.existsNullable(field) ? "default null" : "not null";
         // 支持`@GeneratedValue(strategy = GenerationType.IDENTITY)`
-        String autoIncrement = existsGeneratedValue(field) ? "auto_increment" : EMPTY;
+        String autoIncrement = PsiAnnotationUtils.existsGeneratedValue(field) ? "auto_increment" : EMPTY;
         // 支持注释、支持`@see`
         String comment = buildColumnComment(field);
         // trade_id bigint unsigned not null auto_increment comment "ref:trade.tid, 订单id"
@@ -95,9 +98,9 @@ public class GenerateEntityTableSqlService {
     }
 
     private String buildColumnComment(PsiField field) {
-        List<String> commentDescriptions = extractCommentDescription(field);
+        List<String> commentDescriptions = PsiDocCommentUtils.extractCommentDescription(field);
         if (isNotEmpty(commentDescriptions)) {
-            List<String> atSeeTagValues = extractCommentTagForAtSee(field);
+            List<String> atSeeTagValues = PsiDocCommentUtils.extractCommentTagForAtSee(field);
             if (isNotEmpty(atSeeTagValues)) {
                 // comment "ref:trade.tid, 订单id"
                 return String.format("comment 'ref:%s, %s'", atSeeTagValueToMysqlComment(atSeeTagValues.get(0)), commentDescriptions.get(0));
@@ -137,9 +140,9 @@ public class GenerateEntityTableSqlService {
             return "bigint unsigned";
         } else if (psiType.getPresentableText().equals("BigDecimal")) {
             return "decimal(19, 2)";
-        } else if (isEnumType(psiType)) {
+        } else if (JavaLangUtils.isEnumType(psiType)) {
             return "varchar(50)";
-        } else if (existsJsonType(field)) {
+        } else if (PsiAnnotationUtils.existsJsonType(field)) {
             // 支持`@Type(type = "Json")`
             return "text";
         }
