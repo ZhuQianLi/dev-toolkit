@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("org.jetbrains.intellij") version "1.10.1"
+    id("org.jetbrains.intellij") version "1.12.0"
 }
 
 group = "com.darcy.zql"
@@ -27,7 +27,7 @@ tasks {
     }
 
     patchPluginXml {
-        sinceBuild.set("221")
+        sinceBuild.set("212")
         untilBuild.set("231.*")
     }
 
