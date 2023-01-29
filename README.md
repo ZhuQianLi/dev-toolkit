@@ -10,3 +10,5 @@
   * 使用方式：右键Dao结尾的类名，选择Generate菜单<br/>
   * 支持findByNameAndAge<br/>
   * 支持@Query<br/>
+  * 支持deleteBy<br/>
+  * 支持OrderById<br/>
