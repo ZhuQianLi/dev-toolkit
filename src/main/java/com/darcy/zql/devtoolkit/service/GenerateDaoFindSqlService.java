@@ -3,6 +3,7 @@ package com.darcy.zql.devtoolkit.service;
 import com.darcy.zql.devtoolkit.utils.CommonUtils;
 import com.darcy.zql.devtoolkit.utils.JavaLangUtils;
 import com.darcy.zql.devtoolkit.utils.PsiAnnotationUtils;
+import com.google.common.base.MoreObjects;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
@@ -10,21 +11,16 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.impl.source.PsiClassImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class GenerateDaoFindSqlService {
-
-    /**
-     * 匹配findTop100By开头的字符串
-     */
-    private final static Pattern FIND_TOP_PATTERN = Pattern.compile("^findTop(\\d+)By(.+)");
 
     @NotNull
     public String generateFindAql(AnActionEvent event) {
@@ -37,21 +33,19 @@ public class GenerateDaoFindSqlService {
         for (PsiMethod method : psiClass.getOwnMethods()) {
             if (PsiAnnotationUtils.existsQuery(method)) {
                 String findSql = PsiAnnotationUtils.extractQueryValue(method);
-                if (findSql != null) {
-                    findSqls.add(findSql);
-                } else {
-                    findSqls.add("不支持生成相关查询 方法名【" + method.getName() + "】");
-                }
+                findSqls.add(MoreObjects.firstNonNull(findSql, "不支持生成相关查询 方法名【" + method.getName() + "】"));
             } else if (JavaLangUtils.isDefaultModifier(method)) {
                 findSqls.add("不支持生成相关查询 方法名【" + method.getName() + "】");
             } else {
-                findSqls.add(generateFindSqlByMethod(psiClass, method));
+                String findSql = generateFindSqlByMethod(psiClass, method);
+                findSqls.add(MoreObjects.firstNonNull(findSql, "不支持生成相关查询 方法名【" + method.getName() + "】"));
             }
         }
 
         return String.join("\n", findSqls);
     }
 
+    @Nullable
     private String generateFindSqlByMethod(PsiClassImpl psiClass, PsiMethod method) {
         // className: User -> tableName: user
         String className = psiClass.getName();
@@ -59,33 +53,84 @@ public class GenerateDaoFindSqlService {
         String tableName = CommonUtils.lowerCamelToLowerUnderscore(entityName);
         // methodName: findByNameAndAge
         String methodName = method.getName();
-        if (methodName.startsWith("findBy")) {
-            String columnsString = StringUtils.substringAfter(methodName, "findBy");
-            String whereSql = Arrays.stream(columnsString.split("And")).map(this::resolveWhereSql).collect(Collectors.joining(" and "));
-            return String.format("select * from %s where %s;", tableName, whereSql);
+
+        Triple<String, String, String> triple = splitMethodName(methodName);
+        String operate = triple.getLeft();
+        String andFields = triple.getMiddle();
+        String orderBy = triple.getRight();
+
+        String andFieldsSql = resolveAndFieldsSql(andFields);
+        String orderBySql = resolveOrderBySql(orderBy);
+
+        if (operate.startsWith("findTop")) {
+            String limitSize = StringUtils.substringAfterLast(operate, "findTop");
+            return String.format("select * from %s where %s %s limit %s;", tableName, andFieldsSql, orderBySql, limitSize);
+        }
+        if (operate.startsWith("find")) {
+            return String.format("select * from %s where %s %s;", tableName, andFieldsSql, orderBySql);
         }
 
-        if (methodName.startsWith("existsBy")) {
-            String columnsString = StringUtils.substringAfter(methodName, "existsBy");
-            String whereSql = Arrays.stream(columnsString.split("And")).map(this::resolveWhereSql).collect(Collectors.joining(" and "));
-            return String.format("select * from %s where %s limit 1;", tableName, whereSql);
+        if (operate.startsWith("exists")) {
+            return String.format("select * from %s where %s %s limit 1;", tableName, andFieldsSql, orderBySql);
         }
 
-        if (methodName.startsWith("countBy")) {
-            String columnsString = StringUtils.substringAfter(methodName, "countBy");
-            String whereSql = Arrays.stream(columnsString.split("And")).map(this::resolveWhereSql).collect(Collectors.joining(" and "));
-            return String.format("select count(*) from %s where %s;", tableName, whereSql);
+        if (operate.startsWith("count")) {
+            return String.format("select count(*) from %s where %s %s;", tableName, andFieldsSql, orderBySql);
         }
 
-        Matcher matcher = FIND_TOP_PATTERN.matcher(methodName);
-        if (matcher.find()) {
-            String limitSize = matcher.group(1);
-            String columnsString = matcher.group(2);
-            String whereSql = Arrays.stream(columnsString.split("And")).map(this::resolveWhereSql).collect(Collectors.joining(" and "));
-            return String.format("select * from %s where %s limit %s;", tableName, whereSql, limitSize);
+        if (operate.startsWith("delete")) {
+            return String.format("delete from %s where %s %s;", tableName, andFieldsSql, orderBySql);
         }
 
         throw new RuntimeException("解析方法名异常【" + methodName + "】");
+    }
+
+    /**
+     * findTop100ByNameAndAgeOrderByIdDesc -> [findTop100, NameAndAge IdDesc]
+     */
+    private Triple<String, String, String> splitMethodName(String methonName) {
+        String operate = StringUtils.substringBefore(methonName, "By");
+        methonName = methonName.replace(operate + "By", StringUtils.EMPTY);
+
+        if (methonName.contains("OrderBy")) {
+            String[] splits = methonName.split("OrderBy");
+            return Triple.of(operate, splits[0], splits[1]);
+        } else {
+            return Triple.of(operate, methonName, StringUtils.EMPTY);
+        }
+    }
+
+    private String resolveOrderBySql(String orderBy) {
+        if (StringUtils.isEmpty(orderBy)) {
+            return StringUtils.EMPTY;
+        }
+        List<String> sorts = splitToSorts(orderBy);
+        return "order by " + String.join(",", sorts);
+    }
+
+    /**
+     * JobIdDescTimeAsc -> ["job_id desc","time asc"]
+     */
+    private List<String> splitToSorts(String orderBy) {
+        List<String> sorts = new ArrayList<>();
+        String[] split = orderBy.split("Asc|Desc");
+        for (int i = 0; i < split.length; i++) {
+            // 最后一个
+            if (i + 1 == split.length) {
+                String direction = StringUtils.substringAfterLast(orderBy, split[i]);
+                direction = StringUtils.isNotEmpty(direction) ? direction : "Asc";
+                sorts.add(CommonUtils.upperCamelToLowerUnderscore(split[i]) + " " + direction.toLowerCase());
+            } else {
+                String direction = StringUtils.substringBetween(orderBy, split[i], split[i + 1]);
+                direction = StringUtils.isNotEmpty(direction) ? direction : "Asc";
+                sorts.add(CommonUtils.upperCamelToLowerUnderscore(split[i]) + " " + direction.toLowerCase());
+            }
+        }
+        return sorts;
+    }
+
+    private String resolveAndFieldsSql(String andFields) {
+        return Arrays.stream(andFields.split("And")).map(this::resolveWhereSql).collect(Collectors.joining(" and "));
     }
 
     private String resolveWhereSql(String columnName) {

@@ -33,7 +33,7 @@ public class CommonUtils {
 
     /**
      * 转换字符串格式
-     * LowerCamel --> lower_camel
+     * UpperCamel --> upper_camel
      */
     public static String upperCamelToLowerUnderscore(String string) {
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, string);
