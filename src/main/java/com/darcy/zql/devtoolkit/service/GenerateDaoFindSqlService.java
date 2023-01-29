@@ -33,12 +33,12 @@ public class GenerateDaoFindSqlService {
         for (PsiMethod method : psiClass.getOwnMethods()) {
             if (PsiAnnotationUtils.existsQuery(method)) {
                 String findSql = PsiAnnotationUtils.extractQueryValue(method);
-                findSqls.add(MoreObjects.firstNonNull(findSql, "不支持生成相关查询 方法名【" + method.getName() + "】"));
+                findSqls.add(MoreObjects.firstNonNull(findSql, "-- 不支持生成相关查询 方法名【" + method.getName() + "】"));
             } else if (JavaLangUtils.isDefaultModifier(method)) {
-                findSqls.add("不支持生成相关查询 方法名【" + method.getName() + "】");
+                findSqls.add("-- 不支持生成相关查询 方法名【" + method.getName() + "】");
             } else {
                 String findSql = generateFindSqlByMethod(psiClass, method);
-                findSqls.add(MoreObjects.firstNonNull(findSql, "不支持生成相关查询 方法名【" + method.getName() + "】"));
+                findSqls.add(findSql);
             }
         }
 
@@ -59,27 +59,28 @@ public class GenerateDaoFindSqlService {
         String andFields = triple.getMiddle();
         String orderBy = triple.getRight();
 
-        String andFieldsSql = resolveAndFieldsSql(andFields);
+        String whereSql = resolveWhereSql(andFields);
         String orderBySql = resolveOrderBySql(orderBy);
 
         if (operate.startsWith("findTop")) {
             String limitSize = StringUtils.substringAfterLast(operate, "findTop");
-            return String.format("select * from %s where %s %s limit %s;", tableName, andFieldsSql, orderBySql, limitSize);
+            limitSize = StringUtils.isNotEmpty(limitSize) ? limitSize : "1";
+            return String.format("select * from %s %s %s limit %s;", tableName, whereSql, orderBySql, limitSize);
         }
         if (operate.startsWith("find")) {
-            return String.format("select * from %s where %s %s;", tableName, andFieldsSql, orderBySql);
+            return String.format("select * from %s %s %s;", tableName, whereSql, orderBySql);
         }
 
         if (operate.startsWith("exists")) {
-            return String.format("select * from %s where %s %s limit 1;", tableName, andFieldsSql, orderBySql);
+            return String.format("select * from %s %s %s limit 1;", tableName, whereSql, orderBySql);
         }
 
         if (operate.startsWith("count")) {
-            return String.format("select count(*) from %s where %s %s;", tableName, andFieldsSql, orderBySql);
+            return String.format("select count(*) from %s %s %s;", tableName, whereSql, orderBySql);
         }
 
         if (operate.startsWith("delete")) {
-            return String.format("delete from %s where %s %s;", tableName, andFieldsSql, orderBySql);
+            return String.format("delete from %s %s %s;", tableName, whereSql, orderBySql);
         }
 
         throw new RuntimeException("解析方法名异常【" + methodName + "】");
@@ -129,11 +130,15 @@ public class GenerateDaoFindSqlService {
         return sorts;
     }
 
-    private String resolveAndFieldsSql(String andFields) {
-        return Arrays.stream(andFields.split("And")).map(this::resolveWhereSql).collect(Collectors.joining(" and "));
+    private String resolveWhereSql(String andFields) {
+        if (StringUtils.isEmpty(andFields)) {
+            return StringUtils.EMPTY;
+        }
+        String andSql = Arrays.stream(andFields.split("And")).map(this::resolveOneColumnSql).collect(Collectors.joining(" and "));
+        return " where " + andSql + " ";
     }
 
-    private String resolveWhereSql(String columnName) {
+    private String resolveOneColumnSql(String columnName) {
         if (columnName.endsWith("In")) {
             String cname = StringUtils.substringBeforeLast(columnName, "In");
             return CommonUtils.upperCamelToLowerUnderscore(cname) + " in (?)";
