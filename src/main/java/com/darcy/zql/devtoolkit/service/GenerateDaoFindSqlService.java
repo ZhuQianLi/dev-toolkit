@@ -33,6 +33,7 @@ public class GenerateDaoFindSqlService {
         for (PsiMethod method : psiClass.getOwnMethods()) {
             if (PsiAnnotationUtils.existsQuery(method)) {
                 String findSql = PsiAnnotationUtils.extractQueryValue(method);
+                findSql = findSql + ";";
                 findSqls.add(MoreObjects.firstNonNull(findSql, "-- 不支持生成相关查询 方法名【" + method.getName() + "】"));
             } else if (JavaLangUtils.isDefaultModifier(method)) {
                 findSqls.add("-- 不支持生成相关查询 方法名【" + method.getName() + "】");
