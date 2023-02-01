@@ -139,6 +139,9 @@ public class GenerateDaoFindSqlService {
         return " where " + andSql + " ";
     }
 
+    /**
+     * JobIdIn -> job_id in (?)
+     */
     private String resolveOneColumnSql(String columnName) {
         if (columnName.endsWith("In")) {
             String cname = StringUtils.substringBeforeLast(columnName, "In");
