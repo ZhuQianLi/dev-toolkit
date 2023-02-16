@@ -131,6 +131,9 @@ public class GenerateDaoFindSqlService {
         return sorts;
     }
 
+    /**
+     * NameAndAge -> name = ? and age = ?
+     */
     private String resolveWhereSql(String andFields) {
         if (StringUtils.isEmpty(andFields)) {
             return StringUtils.EMPTY;
