@@ -102,6 +102,9 @@ public class GenerateDaoFindSqlService {
         }
     }
 
+    /**
+     * IdDesc -> order by id desc
+     */
     private String resolveOrderBySql(String orderBy) {
         if (StringUtils.isEmpty(orderBy)) {
             return StringUtils.EMPTY;
