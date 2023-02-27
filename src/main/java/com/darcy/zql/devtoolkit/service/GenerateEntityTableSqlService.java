@@ -58,6 +58,9 @@ public class GenerateEntityTableSqlService {
         return tableSql.toString();
     }
 
+    /**
+     * 获取class第一行注释，作为表注释
+     */
     private String buildTableComment(PsiClass psiClass) {
         List<String> classComments = PsiDocCommentUtils.extractCommentDescription(psiClass);
         return classComments.isEmpty() ? EMPTY : String.format("comment='%s'", classComments.get(0));
