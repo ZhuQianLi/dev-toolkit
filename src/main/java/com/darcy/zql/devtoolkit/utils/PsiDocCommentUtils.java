@@ -1,16 +1,16 @@
 package com.darcy.zql.devtoolkit.utils;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.compress.utils.Lists;
+
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.javadoc.PsiDocToken;
-import org.apache.commons.compress.utils.Lists;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 
 public class PsiDocCommentUtils {
     /**
@@ -64,7 +64,9 @@ public class PsiDocCommentUtils {
         List<String> result = Lists.newArrayList();
         for (PsiDocTag tag : docComment.getTags()) {
             if (tag.getNameElement().getText().equals("@see")) {
-                result.add(Objects.requireNonNull(tag.getValueElement()).getText());
+                if (tag.getValueElement() != null) {
+                    result.add(tag.getValueElement().getText());
+                }
             }
         }
         return result;
