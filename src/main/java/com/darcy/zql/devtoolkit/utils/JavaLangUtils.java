@@ -3,6 +3,7 @@ package com.darcy.zql.devtoolkit.utils;
 import com.intellij.psi.*;
 
 public class JavaLangUtils {
+
     /**
      * 判断类型是否是枚举类型
      */

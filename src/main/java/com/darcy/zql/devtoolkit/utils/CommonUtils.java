@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class CommonUtils {
+
     /**
      * 提取字符串中每个单词的首字母
      *

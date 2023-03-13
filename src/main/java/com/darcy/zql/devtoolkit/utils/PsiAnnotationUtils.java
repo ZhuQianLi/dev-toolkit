@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class PsiAnnotationUtils {
+
     /**
      * 注解@Nullable
      */

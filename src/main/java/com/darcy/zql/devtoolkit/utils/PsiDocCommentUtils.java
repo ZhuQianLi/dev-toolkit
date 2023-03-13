@@ -13,6 +13,7 @@ import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.javadoc.PsiDocToken;
 
 public class PsiDocCommentUtils {
+
     /**
      * 提取字段上的注释
      */
