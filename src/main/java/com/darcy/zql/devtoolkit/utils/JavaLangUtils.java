@@ -30,4 +30,5 @@ public class JavaLangUtils {
         PsiModifierList modifierList = method.getModifierList();
         return modifierList.hasModifierProperty(PsiModifier.DEFAULT);
     }
+
 }
