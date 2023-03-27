@@ -93,7 +93,6 @@ public class GenerateDaoFindSqlService {
     private Triple<String, String, String> splitMethodName(String methonName) {
         String operate = StringUtils.substringBefore(methonName, "By");
         methonName = methonName.replace(operate + "By", StringUtils.EMPTY);
-
         if (methonName.contains("OrderBy")) {
             String[] splits = methonName.split("OrderBy");
             return Triple.of(operate, splits[0], splits[1]);
