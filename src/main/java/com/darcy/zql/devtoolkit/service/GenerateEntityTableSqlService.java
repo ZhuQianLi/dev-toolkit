@@ -48,7 +48,7 @@ public class GenerateEntityTableSqlService {
         String primaryKey = "primary key (`id`)";
         // 支持`@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"userId", "outerId"})})`
         String uniqueKey = buildSqlForUniqueKey(psiClass, tableName);
-        tableSql.append(String.join(",\n", Lists.newArrayList(primaryKey, uniqueKey)));
+        tableSql.append(Lists.newArrayList(primaryKey, uniqueKey).stream().filter(StringUtils::isNotEmpty).collect(Collectors.joining(",\n")));
 
         tableSql.append(")\n");
 
