@@ -3,7 +3,7 @@ package com.darcy.zql.devtoolkit.service;
 import com.darcy.zql.devtoolkit.utils.JavaLangUtils;
 import com.darcy.zql.devtoolkit.utils.PsiAnnotationUtils;
 import com.darcy.zql.devtoolkit.utils.PsiDocCommentUtils;
-import com.darcy.zql.devtoolkit.utils.CommonUtils;
+import com.darcy.zql.devtoolkit.utils.StringUtils;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -13,13 +13,11 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiType;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.darcy.zql.devtoolkit.utils.CommonUtils.*;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
@@ -73,9 +71,9 @@ public class GenerateEntityTableSqlService {
         }
         List<String> tableNameAndColumnNames = Lists.newArrayList(tableName);
         tableNameAndColumnNames.addAll(uniqueKey);
-        String uniqueKeyName = tableNameAndColumnNames.stream().map(CommonUtils::extractWordFirstChar).collect(Collectors.joining("_"));
+        String uniqueKeyName = tableNameAndColumnNames.stream().map(StringUtils::extractWordFirstChar).collect(Collectors.joining("_"));
 
-        String columnNames = uniqueKey.stream().map(k -> String.format("`%s`", lowerCamelToLowerUnderscore(k))).collect(Collectors.joining(","));
+        String columnNames = uniqueKey.stream().map(k -> String.format("`%s`", StringUtils.lowerCamelToLowerUnderscore(k))).collect(Collectors.joining(","));
         return String.format("unique key `uk_%s` (%s)", uniqueKeyName, columnNames);
     }
 
@@ -87,7 +85,7 @@ public class GenerateEntityTableSqlService {
 
     private String buildSqlForOneColumn(PsiField field) {
         String fieldName = field.getName();
-        String field_name = String.format("`%s`", lowerCamelToLowerUnderscore(fieldName));
+        String field_name = String.format("`%s`", StringUtils.lowerCamelToLowerUnderscore(fieldName));
 
         String mysqlType = psiTypeToMysqlType(field);
         // 支持`@Nullable`
@@ -126,7 +124,9 @@ public class GenerateEntityTableSqlService {
         // Trade -> Trade
         String className = split[0].contains(".") ? StringUtils.substringAfterLast(split[0], ".") : split[0];
         // Trade + tid -> trade.tid
-        return upperCamelToLowerUnderscore(className) + "." + lowerCamelToLowerUnderscore(split[1]);
+        String luClassName = StringUtils.upperCamelToLowerUnderscore(className);
+        String luFieldName = StringUtils.lowerCamelToLowerUnderscore(split[1]);
+        return luClassName + "." + luFieldName;
     }
 
     private String psiTypeToMysqlType(PsiField field) {
