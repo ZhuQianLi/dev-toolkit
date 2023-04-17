@@ -12,3 +12,5 @@
    * 支持@Query<br/>
    * 支持deleteBy<br/>
    * 支持OrderById<br/>
+3. 生成对象转换代码<br/>
+   * 开发中
