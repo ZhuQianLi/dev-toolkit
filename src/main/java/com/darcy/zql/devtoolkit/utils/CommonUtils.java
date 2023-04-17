@@ -26,7 +26,7 @@ public class CommonUtils {
 
     /**
      * 转换字符串格式
-     * lowerCamel --> lower_camel
+     * lowerCamel -> lower_camel
      */
     public static String lowerCamelToLowerUnderscore(String string) {
         return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, string);
