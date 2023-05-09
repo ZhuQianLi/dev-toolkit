@@ -6,6 +6,7 @@
    * 支持`@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"userId", "outerId"})})`<br/>
    * 支持`@GeneratedValue(strategy = GenerationType.IDENTITY)`<br/>
    * 支持`@Type(type = "Json")`<br/>
+   * 支持`代码注释`生成comment<br/>
 2. EntityDao生成相关查询语句<br/>
    * 使用方式：右键Dao结尾的类名，选择Generate菜单<br/>
    * 支持findByNameAndAge<br/>
