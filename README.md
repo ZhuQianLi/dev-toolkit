@@ -1,5 +1,11 @@
-# dev-toolkit
-工作中常用的代码生成工具<br/>
+# 工作中常用的代码生成工具
+
+### 插件安装方式
+
+* 下载最新Releases里的dev-toolkit-********.zip文件，在idea中安装。
+
+### 已实现功能
+
 1. Entity生成表结构<br/>
    * 使用方式：右键带有@Entity注解的类名，选择Generate菜单<br/>
    * 支持`@Nullable`<br/>
