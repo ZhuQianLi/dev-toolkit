@@ -113,4 +113,21 @@ public class StringUtils {
     public static String upperCamelToLowerUnderscore(String string) {
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, string);
     }
+
+    /**
+     * 转换字符串格式
+     * UpperCamel --> upperCamel
+     */
+    public static String upperCamelToLowerCamel(String string) {
+        return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, string);
+    }
+
+    /**
+     * 转换字符串格式
+     * upperCamel --> UpperCamel
+     */
+    public static String lowerCamelToUpperCamel(String string) {
+        return CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, string);
+    }
+
 }

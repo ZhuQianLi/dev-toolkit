@@ -53,7 +53,7 @@
             <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="GenerateEntityTableSqlAction"/>
         </action>
         <action id="GenerateObjectConvertCodeAction" class="com.darcy.zql.devtoolkit.action.GenerateObjectConvertCodeAction"
-                text="生成对象转换代码" description="生成对象转换代码">
+                text="生成对象转换代码" description="Convert生成对象转换代码">
             <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="GenerateDaoFindSqlAction"/>
         </action>
     </actions>

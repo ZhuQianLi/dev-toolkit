@@ -1,6 +1,9 @@
 package com.darcy.zql.devtoolkit.utils;
 
+import com.google.common.collect.Sets;
 import com.intellij.psi.*;
+
+import java.util.Set;
 
 public class JavaLangUtils {
 
@@ -8,8 +11,8 @@ public class JavaLangUtils {
      * 判断类型是否是枚举类型
      */
     public static boolean isEnumType(PsiType psiType) {
-        return psiType.getSuperTypes().length == 1
-                && psiType.getSuperTypes()[0].getPresentableText().startsWith("Enum");
+        return psiType.getSuperTypes().length == 1 && psiType.getSuperTypes()[0].getPresentableText()
+                .startsWith("Enum");
     }
 
     /**
@@ -29,6 +32,25 @@ public class JavaLangUtils {
     public static boolean isDefaultModifier(PsiMethod method) {
         PsiModifierList modifierList = method.getModifierList();
         return modifierList.hasModifierProperty(PsiModifier.DEFAULT);
+    }
+
+    /**
+     * java基础类型名称
+     */
+    private static final Set<String> JAVA_BASE_TYPE_NAME_SET = Sets.newHashSet("String", "LocalDateTime", "LocalDate",
+            "LocalTime", "Boolean", "boolean", "Integer", "int", "Long", "long", "BigDecimal");
+
+    /**
+     * 判定类型是否是Java基础类型
+     */
+    public static boolean isJavaBaseType(PsiType type) {
+        if (JAVA_BASE_TYPE_NAME_SET.contains(type.getPresentableText())) {
+            return true;
+        }
+        if (isEnumType(type)) {
+            return true;
+        }
+        return false;
     }
 
 }
