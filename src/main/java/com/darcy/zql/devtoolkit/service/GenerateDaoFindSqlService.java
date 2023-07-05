@@ -175,7 +175,7 @@ public class GenerateDaoFindSqlService {
             String cname = StringUtils.substringBeforeLast(columnName, "GreaterThan");
             return StringUtils.upperCamelToLowerUnderscore(cname) + " > ?";
         } else if (columnName.endsWith("LessThan")) {
-            String cname = StringUtils.substringBeforeLast(columnName, "GreaterThan");
+            String cname = StringUtils.substringBeforeLast(columnName, "LessThan");
             return StringUtils.upperCamelToLowerUnderscore(cname) + " < ?";
         } else if (columnName.endsWith("After")) {
             String cname = StringUtils.substringBeforeLast(columnName, "After");
