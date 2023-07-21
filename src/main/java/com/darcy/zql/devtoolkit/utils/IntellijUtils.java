@@ -32,7 +32,7 @@ public class IntellijUtils {
     }
 
     /**
-     * 另起一行，写入代码
+     * 另起一行，写入代码.
      */
     public static void writeJavaCodes(AnActionEvent event, List<String> javaCodes) {
         Project project = event.getProject();
