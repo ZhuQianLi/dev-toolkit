@@ -5,6 +5,7 @@ import com.darcy.zql.devtoolkit.utils.PsiAnnotationUtils;
 import com.darcy.zql.devtoolkit.utils.PsiDocCommentUtils;
 import com.darcy.zql.devtoolkit.utils.StringUtils;
 import com.google.common.base.CaseFormat;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -13,9 +14,12 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiType;
+import org.apache.commons.compress.utils.Sets;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
@@ -36,7 +40,8 @@ public class GenerateEntityTableSqlService {
         String tableName = buildTableName(psiClass);
         tableSql.append(String.format("create table %s (\n", tableName));
 
-        for (PsiField field : psiClass.getFields()) {
+        List<PsiField> allFields = sortFields(psiClass.getAllFields());
+        for (PsiField field : allFields) {
             if (JavaLangUtils.isStaticModifier(field)) {
                 continue;
             }
@@ -51,9 +56,15 @@ public class GenerateEntityTableSqlService {
         tableSql.append(")\n");
 
         String tableComment = buildTableComment(psiClass);
-        tableSql.append(String.format("ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=DYNAMIC %s;\n", tableComment));
         tableSql.append(String.format("ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC %s;\n", tableComment));
         return tableSql.toString();
+    }
+
+    private List<PsiField> sortFields(PsiField[] allFields) {
+        Set<String> sortFirstFields = Sets.newHashSet("id", "version", "dxCreated", "dxModified");
+        List<PsiField> firstFields = Arrays.stream(allFields).filter(field -> sortFirstFields.contains(field.getName())).collect(Collectors.toList());
+        List<PsiField> lastFields = Arrays.stream(allFields).filter(field -> !sortFirstFields.contains(field.getName())).collect(Collectors.toList());
+        return Lists.newArrayList(Iterables.concat(firstFields, lastFields));
     }
 
     /**
