@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.darcy.zql"
-version = "20230808"
+version = "20230927"
 
 repositories {
     mavenCentral()
@@ -28,7 +28,7 @@ tasks {
 
     patchPluginXml {
         sinceBuild.set("212")
-        untilBuild.set("232.*")
+        untilBuild.set("233.*")
     }
 
     signPlugin {
