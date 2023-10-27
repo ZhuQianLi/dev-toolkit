@@ -53,4 +53,11 @@ public class JavaLangUtils {
         return false;
     }
 
+    /**
+     * 判定类型是否在java包下
+     */
+    public static boolean isInJavaPackageType(PsiType type) {
+        return type.getCanonicalText().startsWith("java.");
+    }
+
 }

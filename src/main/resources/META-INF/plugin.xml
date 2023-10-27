@@ -33,9 +33,10 @@
            * 根据方法的返回值和参数，生成赋值代码
            * 匹配规则：名称一样
            * 支持多个参数，按参数顺序匹配
-        4. 生成代码,NotNull注解<br/>
+        4. 生成代码,NotNull、Valid注解<br/>
            * 使用方式：右键Cmd结尾的类名，选择Generate菜单<br/>
            * 支持过滤已经打上@Nullable、@NotNull的字段
+           * 支持自动增加@Valid
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.
@@ -65,7 +66,7 @@
             <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="GenerateDaoFindSqlAction"/>
         </action>
         <action id="AddNotNullCodeAction" class="com.darcy.zql.devtoolkit.action.AddNotNullCodeAction"
-                text="生成代码,NotNull注解" description="D:Cmd类下Field插入NotNull注解代码">
+                text="生成代码,NotNull、Valid注解" description="D:Cmd类下自动给字段打注解">
             <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="GenerateObjectConvertCodeAction"/>
         </action>
     </actions>

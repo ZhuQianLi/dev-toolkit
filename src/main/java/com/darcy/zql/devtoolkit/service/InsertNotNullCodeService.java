@@ -1,5 +1,6 @@
 package com.darcy.zql.devtoolkit.service;
 
+import com.darcy.zql.devtoolkit.utils.JavaLangUtils;
 import com.darcy.zql.devtoolkit.utils.PsiAnnotationUtils;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -22,15 +23,15 @@ public class InsertNotNullCodeService {
         PsiField[] allFields = psiClass.getAllFields();
         for (int i = allFields.length - 1; i >= 0; i--) {
             PsiField field = allFields[i];
-
-            if (PsiAnnotationUtils.existsNullable(field) || PsiAnnotationUtils.existsNotNull(field)) {
-                continue;
-            }
             insertNotNullCodeForField(event, field);
         }
     }
 
     private void insertNotNullCodeForField(AnActionEvent event, PsiField field) {
+        if (PsiAnnotationUtils.existsNullable(field) || PsiAnnotationUtils.existsNotNull(field)) {
+            return;
+        }
+
         Editor editor = CommonDataKeys.EDITOR.getData(event.getDataContext());
         assert editor != null;
         Document document = editor.getDocument();
@@ -39,7 +40,11 @@ public class InsertNotNullCodeService {
 
         String blankSpace = "    ";
         WriteCommandAction.runWriteCommandAction(event.getProject(), () -> {
-            document.insertString(lineStartOffset, blankSpace + "@NotNull\n");
+            if (JavaLangUtils.isInJavaPackageType(field.getType())) {
+                document.insertString(lineStartOffset, blankSpace + "@NotNull\n");
+            } else {
+                document.insertString(lineStartOffset, blankSpace + "@Valid\n" + blankSpace + "@NotNull\n");
+            }
         });
     }
 
