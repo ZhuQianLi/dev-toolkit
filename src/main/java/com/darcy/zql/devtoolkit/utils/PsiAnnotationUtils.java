@@ -27,6 +27,19 @@ public class PsiAnnotationUtils {
     }
 
     /**
+     * 注解@NotNull
+     */
+    public static boolean existsNotNull(PsiField psiField) {
+        PsiAnnotation[] annotations = psiField.getAnnotations();
+        for (PsiAnnotation annotation : annotations) {
+            if (Objects.equals(annotation.getText(), "@NotNull")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 注解@GeneratedValue
      */
     public static boolean existsGeneratedValue(PsiField psiField) {
