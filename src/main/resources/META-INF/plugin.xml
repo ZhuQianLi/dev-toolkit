@@ -35,8 +35,10 @@
            * 支持多个参数，按参数顺序匹配
         4. 生成代码,NotNull、Valid注解<br/>
            * 使用方式：右键Cmd结尾的类名，选择Generate菜单<br/>
-           * 支持过滤已经打上@Nullable、@NotNull的字段
-           * 支持自动增加@Valid
+           * 支持过滤已经打上@Nullable、@NotNull的字段<br/>
+           * 支持自动增加@Valid<br/>
+       4. Class生成ts类型代码<br/>
+           * 使用方式：右键类名，选择Generate菜单<br/>
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.
@@ -54,20 +56,25 @@
 
     <actions>
         <action id="GenerateEntityTableSqlAction" class="com.darcy.zql.devtoolkit.action.GenerateEntityTableSqlAction"
-                text="生成SQL到剪贴板,Entity生成表结构" description="A:Entity生成表结构">
+                text="DevToolKit-生成建表语句">
             <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
         <action id="GenerateDaoFindSqlAction" class="com.darcy.zql.devtoolkit.action.GenerateDaoFindSqlAction"
-                text="生成SQL到剪贴板,Dao生成相关查询" description="B:Dao生成相关查询">
-            <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="GenerateEntityTableSqlAction"/>
+                text="DevToolKit-生成相关查询">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
-        <action id="GenerateObjectConvertCodeAction" class="com.darcy.zql.devtoolkit.action.GenerateObjectConvertCodeAction"
-                text="生成代码,对象转换" description="C:生成对象转换代码">
-            <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="GenerateDaoFindSqlAction"/>
+        <action id="GenerateObjectConvertCodeAction"
+                class="com.darcy.zql.devtoolkit.action.GenerateObjectConvertCodeAction"
+                text="DevToolKit-实现对象转换接口">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
         <action id="AddNotNullCodeAction" class="com.darcy.zql.devtoolkit.action.AddNotNullCodeAction"
-                text="生成代码,NotNull、Valid注解" description="D:Cmd类下自动给字段打注解">
-            <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="GenerateObjectConvertCodeAction"/>
+                text="DevToolKit-添加@NotNull、@Valid注解">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
+        </action>
+        <action id="ClassToTsTypeAction" class="com.darcy.zql.devtoolkit.action.ClassToTsTypeAction"
+                text="DevToolKit-ClassToTsType">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
     </actions>
 </idea-plugin>

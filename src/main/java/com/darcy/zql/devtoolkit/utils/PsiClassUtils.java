@@ -24,12 +24,12 @@ public class PsiClassUtils {
      * 通过全类名，获取PsiClass
      */
     @Nullable
-    public static PsiClass getPsiClassByFullName(Project project, String fullName) {
-        String simpleName = StringUtils.substringAfterLast(fullName, ".");
+    public static PsiClass getPsiClassByFullName(Project project, String className) {
+        String simpleName = StringUtils.substringAfterLast(className, ".");
         PsiClass[] psiClasses = PsiShortNamesCache.getInstance(project)
                 .getClassesByName(simpleName, GlobalSearchScope.allScope(project));
         for (PsiClass psiClass : psiClasses) {
-            if (Objects.equals(psiClass.getQualifiedName(), fullName)) {
+            if (Objects.equals(psiClass.getQualifiedName(), className)) {
                 return psiClass;
             }
         }
