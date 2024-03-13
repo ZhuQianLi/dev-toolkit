@@ -130,4 +130,7 @@ public class StringUtils {
         return CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, string);
     }
 
+    public static boolean contains(CharSequence seq, CharSequence searchSeq) {
+        return org.apache.commons.lang3.StringUtils.contains(seq, searchSeq);
+    }
 }
