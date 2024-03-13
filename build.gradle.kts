@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.darcy.zql"
-version = "20240112"
+version = "20240313"
 
 repositories {
     mavenCentral()
