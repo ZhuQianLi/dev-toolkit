@@ -25,7 +25,7 @@ public class AddNotNullCodeAction extends AnAction {
         PsiElement psiElement = CommonDataKeys.PSI_ELEMENT.getData(dataContext);
         if (psiElement instanceof PsiClass) {
             PsiClass psiClass = (PsiClass) psiElement;
-            if (psiClass.getName() != null && psiClass.getName().endsWith("Cmd")) {
+            if (psiClass.getName() != null && (psiClass.getName().endsWith("Cmd") || psiClass.getName().endsWith("Dto"))) {
                 event.getPresentation().setEnabled(true);
                 return;
             }
