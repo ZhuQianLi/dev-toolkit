@@ -5,6 +5,8 @@ import com.intellij.psi.*;
 
 import java.util.Set;
 
+// todo 待重构
+@Deprecated
 public class JavaLangUtils {
 
     /**
