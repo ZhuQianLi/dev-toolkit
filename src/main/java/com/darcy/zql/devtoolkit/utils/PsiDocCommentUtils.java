@@ -12,6 +12,8 @@ import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.javadoc.PsiDocToken;
 
+// todo 待重构
+@Deprecated
 public class PsiDocCommentUtils {
 
     /**
