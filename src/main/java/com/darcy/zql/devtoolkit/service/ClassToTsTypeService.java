@@ -21,6 +21,7 @@ public class ClassToTsTypeService {
     }
 
     private List<JavaClass> resolveNeedGenerateClassDeeply(JavaClassLoader classLoader, String className) {
+        Preconditions.checkNotNull(className);
         List<JavaClass> classes = Lists.newArrayList();
 
         JavaClass rootClass = Preconditions.checkNotNull(classLoader.forName(className));
