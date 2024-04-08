@@ -9,6 +9,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
+// todo 待重构
+@Deprecated
 public class PsiClassUtils {
 
     /**
