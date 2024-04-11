@@ -85,11 +85,11 @@ public class PsiTypeImpl implements JavaType {
 
     @Override
     public boolean isCustom() {
-        return !(isPrimitiveType() || isCollection());
+        return !(isPrimitive() || isCollection());
     }
 
     @Override
-    public boolean isPrimitiveType() {
+    public boolean isPrimitive() {
         return CANONICAL_TEXT_MAP.containsKey(psiType.getCanonicalText()) || isEnum();
     }
 

@@ -28,6 +28,6 @@ public interface JavaType {
 
     boolean isCustom();
 
-    boolean isPrimitiveType();
+    boolean isPrimitive();
 
 }

@@ -35,7 +35,7 @@ public class ClassToTsTypeService {
             if (type.isCollection()) {
                 type = type.getGenericsType();
             }
-            if (type.isPrimitiveType()) {
+            if (type.isPrimitive()) {
                 continue;
             }
             List<JavaClass> fieldClasses = resolveNeedGenerateClassDeeply(classLoader, type.getName());
