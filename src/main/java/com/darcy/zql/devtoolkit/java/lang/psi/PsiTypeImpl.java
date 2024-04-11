@@ -73,19 +73,24 @@ public class PsiTypeImpl implements JavaType {
     }
 
     @Override
+    public boolean isEnum() {
+        return psiType.getSuperTypes().length == 1 && psiType.getSuperTypes()[0].getPresentableText().startsWith("Enum");
+    }
+
+    @Override
     public JavaType getCollectionParameterType() {
         PsiClassType psiClassType = (PsiClassType) psiType;
         return new PsiTypeImpl(psiClassType.getParameters()[0]);
     }
 
     @Override
-    public boolean isJavaBaseType() {
-        return CANONICAL_TEXT_MAP.containsKey(psiType.getCanonicalText());
+    public boolean isCustom() {
+        return !(isJavaBaseType() || isCollection());
     }
 
     @Override
-    public boolean isCustom() {
-        return !(isJavaBaseType() || isCollection());
+    public boolean isJavaBaseType() {
+        return CANONICAL_TEXT_MAP.containsKey(psiType.getCanonicalText()) || isEnum();
     }
 
 }

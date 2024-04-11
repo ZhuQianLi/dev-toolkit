@@ -22,6 +22,8 @@ public interface JavaType {
 
     boolean isCollection();
 
+    boolean isEnum();
+
     JavaType getCollectionParameterType();
 
     boolean isCustom();
