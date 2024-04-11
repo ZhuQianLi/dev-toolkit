@@ -1,11 +1,13 @@
 package com.darcy.zql.devtoolkit.valueobject;
 
+import com.intellij.psi.PsiType;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public enum JavaBaseType {
+public enum JavaPrimitiveType {
     String("java.lang.String"),
     LocalDate("java.time.LocalDate"),
     LocalDateTime("java.time.LocalDateTime"),
@@ -19,12 +21,15 @@ public enum JavaBaseType {
     BigDecimal("java.math.BigDecimal"),
     ;
 
-    public static final Map<String, JavaBaseType> CANONICAL_TEXT_MAP =
-            Arrays.stream(JavaBaseType.values()).collect(Collectors.toMap(JavaBaseType::getCanonicalText, Function.identity()));
+    public static final Map<String, JavaPrimitiveType> CANONICAL_TEXT_MAP =
+            Arrays.stream(JavaPrimitiveType.values()).collect(Collectors.toMap(JavaPrimitiveType::getCanonicalText, Function.identity()));
 
+    /**
+     * @see PsiType#getCanonicalText()
+     */
     private final String canonicalText;
 
-    JavaBaseType(String canonicalText) {
+    JavaPrimitiveType(String canonicalText) {
         this.canonicalText = canonicalText;
     }
 

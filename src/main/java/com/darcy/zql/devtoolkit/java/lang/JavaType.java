@@ -6,6 +6,8 @@ public interface JavaType {
 
     String getSimpleName();
 
+    JavaType getGenericsType();
+
     boolean isString();
 
     boolean isLocalDate();
@@ -24,10 +26,8 @@ public interface JavaType {
 
     boolean isEnum();
 
-    JavaType getCollectionParameterType();
-
     boolean isCustom();
 
-    boolean isJavaBaseType();
+    boolean isPrimitiveType();
 
 }

@@ -2,14 +2,14 @@ package com.darcy.zql.devtoolkit.java.lang.psi;
 
 import com.darcy.zql.devtoolkit.java.lang.JavaType;
 import com.darcy.zql.devtoolkit.utils.StringUtils;
-import com.darcy.zql.devtoolkit.valueobject.JavaBaseType;
+import com.darcy.zql.devtoolkit.valueobject.JavaPrimitiveType;
 import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiType;
 
 import java.util.Objects;
 
-import static com.darcy.zql.devtoolkit.valueobject.JavaBaseType.BigDecimal;
-import static com.darcy.zql.devtoolkit.valueobject.JavaBaseType.CANONICAL_TEXT_MAP;
+import static com.darcy.zql.devtoolkit.valueobject.JavaPrimitiveType.BigDecimal;
+import static com.darcy.zql.devtoolkit.valueobject.JavaPrimitiveType.CANONICAL_TEXT_MAP;
 
 public class PsiTypeImpl implements JavaType {
 
@@ -30,36 +30,42 @@ public class PsiTypeImpl implements JavaType {
     }
 
     @Override
+    public JavaType getGenericsType() {
+        PsiClassType psiClassType = (PsiClassType) psiType;
+        return new PsiTypeImpl(psiClassType.getParameters()[0]);
+    }
+
+    @Override
     public boolean isString() {
-        return Objects.equals(psiType.getCanonicalText(), JavaBaseType.String.getCanonicalText());
+        return Objects.equals(psiType.getCanonicalText(), JavaPrimitiveType.String.getCanonicalText());
     }
 
     @Override
     public boolean isLocalDate() {
-        return Objects.equals(psiType.getCanonicalText(), JavaBaseType.LocalDate.getCanonicalText());
+        return Objects.equals(psiType.getCanonicalText(), JavaPrimitiveType.LocalDate.getCanonicalText());
     }
 
     @Override
     public boolean isLocalDateTime() {
-        return Objects.equals(psiType.getCanonicalText(), JavaBaseType.LocalDateTime.getCanonicalText());
+        return Objects.equals(psiType.getCanonicalText(), JavaPrimitiveType.LocalDateTime.getCanonicalText());
     }
 
     @Override
     public boolean isBoolean() {
         String canonicalText = psiType.getCanonicalText();
-        return Objects.equals(canonicalText, JavaBaseType.Boolean.getCanonicalText()) || Objects.equals(canonicalText, JavaBaseType.primitive_boolean.getCanonicalText());
+        return Objects.equals(canonicalText, JavaPrimitiveType.Boolean.getCanonicalText()) || Objects.equals(canonicalText, JavaPrimitiveType.primitive_boolean.getCanonicalText());
     }
 
     @Override
     public boolean isInteger() {
         String canonicalText = psiType.getCanonicalText();
-        return Objects.equals(canonicalText, JavaBaseType.Integer.getCanonicalText()) || Objects.equals(canonicalText, JavaBaseType.primitive_int.getCanonicalText());
+        return Objects.equals(canonicalText, JavaPrimitiveType.Integer.getCanonicalText()) || Objects.equals(canonicalText, JavaPrimitiveType.primitive_int.getCanonicalText());
     }
 
     @Override
     public boolean isLong() {
         String canonicalText = psiType.getCanonicalText();
-        return Objects.equals(canonicalText, JavaBaseType.Long.getCanonicalText()) || Objects.equals(canonicalText, JavaBaseType.primitive_long.getCanonicalText());
+        return Objects.equals(canonicalText, JavaPrimitiveType.Long.getCanonicalText()) || Objects.equals(canonicalText, JavaPrimitiveType.primitive_long.getCanonicalText());
     }
 
     @Override
@@ -78,18 +84,12 @@ public class PsiTypeImpl implements JavaType {
     }
 
     @Override
-    public JavaType getCollectionParameterType() {
-        PsiClassType psiClassType = (PsiClassType) psiType;
-        return new PsiTypeImpl(psiClassType.getParameters()[0]);
-    }
-
-    @Override
     public boolean isCustom() {
-        return !(isJavaBaseType() || isCollection());
+        return !(isPrimitiveType() || isCollection());
     }
 
     @Override
-    public boolean isJavaBaseType() {
+    public boolean isPrimitiveType() {
         return CANONICAL_TEXT_MAP.containsKey(psiType.getCanonicalText()) || isEnum();
     }
 

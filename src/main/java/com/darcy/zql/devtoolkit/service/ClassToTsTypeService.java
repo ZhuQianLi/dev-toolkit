@@ -33,9 +33,9 @@ public class ClassToTsTypeService {
             }
             JavaType type = field.getType();
             if (type.isCollection()) {
-                type = type.getCollectionParameterType();
+                type = type.getGenericsType();
             }
-            if (type.isJavaBaseType()) {
+            if (type.isPrimitiveType()) {
                 continue;
             }
             List<JavaClass> fieldClasses = resolveNeedGenerateClassDeeply(classLoader, type.getName());
@@ -86,7 +86,7 @@ public class ClassToTsTypeService {
         } else if (type.isBigDecimal()) {
             return "string";
         } else if (type.isCollection()) {
-            JavaType parameterType = type.getCollectionParameterType();
+            JavaType parameterType = type.getGenericsType();
             return generateByType(parameterType) + "[]";
         } else if (type.isCustom()) {
             return type.getSimpleName();
