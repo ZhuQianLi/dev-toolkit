@@ -1,14 +1,14 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
-    <id>com.darcy.zql.dev-toolkit</id>
+    <id>com.zhuqianli.dev-toolkit</id>
 
     <!-- Public plugin name should be written in Title Case.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
     <name>Dev Toolkit</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor email="zhu.qianli@darcytech.com" url="http://www.darcytech.com">darcy</vendor>
+    <vendor email="zhu.qianli@zhuqianli.com" url="http://www.zhuqianli.com">zhuqianli</vendor>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
@@ -55,24 +55,24 @@
     </extensions>
 
     <actions>
-        <action id="GenerateEntityTableSqlAction" class="com.darcy.zql.devtoolkit.action.GenerateEntityTableSqlAction"
+        <action id="GenerateEntityTableSqlAction" class="com.zhuqianli.devtoolkit.action.GenerateEntityTableSqlAction"
                 text="DevToolkit-生成建表语句">
             <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
-        <action id="GenerateDaoFindSqlAction" class="com.darcy.zql.devtoolkit.action.GenerateDaoFindSqlAction"
+        <action id="GenerateDaoFindSqlAction" class="com.zhuqianli.devtoolkit.action.GenerateDaoFindSqlAction"
                 text="DevToolkit-生成相关查询">
             <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
         <action id="GenerateObjectConvertCodeAction"
-                class="com.darcy.zql.devtoolkit.action.GenerateObjectConvertCodeAction"
+                class="com.zhuqianli.devtoolkit.action.GenerateObjectConvertCodeAction"
                 text="DevToolkit-实现对象转换方法">
             <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
-        <action id="AddNotNullCodeAction" class="com.darcy.zql.devtoolkit.action.AddNotNullCodeAction"
+        <action id="AddNotNullCodeAction" class="com.zhuqianli.devtoolkit.action.AddNotNullCodeAction"
                 text="DevToolkit-添加@NotNull、@Valid注解">
             <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
-        <action id="ClassToTsTypeAction" class="com.darcy.zql.devtoolkit.action.ClassToTsTypeAction"
+        <action id="ClassToTsTypeAction" class="com.zhuqianli.devtoolkit.action.ClassToTsTypeAction"
                 text="DevToolkit-ClassToTsType">
             <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>

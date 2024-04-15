@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.intellij") version "1.12.0"
 }
 
-group = "com.darcy.zql"
+group = "com.zhuqianli"
 version = "20240408"
 
 repositories {
