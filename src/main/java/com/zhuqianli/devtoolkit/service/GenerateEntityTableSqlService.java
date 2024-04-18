@@ -1,5 +1,9 @@
 package com.zhuqianli.devtoolkit.service;
 
+import com.zhuqianli.devtoolkit.java.lang.*;
+import com.zhuqianli.devtoolkit.java.lang.psi.PsiClassImpl;
+import com.zhuqianli.devtoolkit.java.lang.psi.PsiClassLoaderImpl;
+import com.zhuqianli.devtoolkit.java.lang.psi.PsiMethodImpl;
 import com.zhuqianli.devtoolkit.utils.JavaLangUtils;
 import com.zhuqianli.devtoolkit.utils.PsiAnnotationUtils;
 import com.zhuqianli.devtoolkit.utils.PsiDocCommentUtils;
@@ -31,18 +35,16 @@ public class GenerateEntityTableSqlService {
     public String generateTableSql(AnActionEvent event) {
         DataContext dataContext = event.getDataContext();
         PsiElement psiElement = CommonDataKeys.PSI_ELEMENT.getData(dataContext);
-        PsiClass psiClass = (PsiClass) psiElement;
-        assert psiClass != null;
-
+        JavaClass psiClass = new PsiClassImpl((PsiClass) psiElement);
 
         StringBuilder tableSql = new StringBuilder();
 
         String tableName = buildTableName(psiClass);
         tableSql.append(String.format("create table %s (\n", tableName));
 
-        List<PsiField> allFields = sortFields(psiClass.getAllFields());
-        for (PsiField field : allFields) {
-            if (JavaLangUtils.isStaticModifier(field)) {
+        List<JavaField> allFields = sortFields(psiClass.getFields());
+        for (JavaField field : allFields) {
+            if (field.isStatic()) {
                 continue;
             }
             tableSql.append(buildSqlForOneColumn(field));
@@ -60,10 +62,10 @@ public class GenerateEntityTableSqlService {
         return tableSql.toString();
     }
 
-    private List<PsiField> sortFields(PsiField[] allFields) {
+    private List<JavaField> sortFields(List<JavaField> allFields) {
         Set<String> sortFirstFields = Sets.newHashSet("id", "version", "dxCreated", "dxModified");
-        List<PsiField> firstFields = Arrays.stream(allFields).filter(field -> sortFirstFields.contains(field.getName())).collect(Collectors.toList());
-        List<PsiField> lastFields = Arrays.stream(allFields).filter(field -> !sortFirstFields.contains(field.getName())).collect(Collectors.toList());
+        List<JavaField> firstFields = allFields.stream().filter(field -> sortFirstFields.contains(field.getName())).collect(Collectors.toList());
+        List<JavaField> lastFields = allFields.stream().filter(field -> !sortFirstFields.contains(field.getName())).collect(Collectors.toList());
         return Lists.newArrayList(Iterables.concat(firstFields, lastFields));
     }
 
@@ -88,13 +90,13 @@ public class GenerateEntityTableSqlService {
         return String.format("unique key `uk_%s` (%s)", uniqueKeyName, columnNames);
     }
 
-    private String buildTableName(PsiClass psiClass) {
+    private String buildTableName(JavaClass psiClass) {
         String className = psiClass.getName();
         assert className != null;
         return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, className);
     }
 
-    private String buildSqlForOneColumn(PsiField field) {
+    private String buildSqlForOneColumn(JavaField field) {
         String fieldName = field.getName();
         String field_name = String.format("`%s`", StringUtils.lowerCamelToLowerUnderscore(fieldName));
 
@@ -140,27 +142,27 @@ public class GenerateEntityTableSqlService {
         return luClassName + "." + luFieldName;
     }
 
-    private String psiTypeToMysqlType(PsiField field) {
-        PsiType psiType = field.getType();
-        if (psiType.getPresentableText().equals("String")) {
+    private String psiTypeToMysqlType(JavaField field) {
+        JavaType psiType = field.getType();
+        if (psiType.isString()) {
             return "varchar(255)";
-        } else if (psiType.getPresentableText().equals("LocalDateTime")) {
+        } else if (psiType.isLocalDateTime()) {
             return "datetime";
-        } else if (psiType.getPresentableText().equals("Boolean")) {
+        } else if (psiType.isBoolean()) {
             return "tinyint unsigned";
-        } else if (psiType.getPresentableText().equals("Integer")) {
+        } else if (psiType.isInteger()) {
             return "int unsigned";
-        } else if (psiType.getPresentableText().equals("Long")) {
+        } else if (psiType.isLong()) {
             return "bigint unsigned";
-        } else if (psiType.getPresentableText().equals("BigDecimal")) {
+        } else if (psiType.isBigDecimal()) {
             return "decimal(19, 2)";
-        } else if (JavaLangUtils.isEnumType(psiType)) {
+        } else if (psiType.isEnum()) {
             return "varchar(50)";
         } else if (PsiAnnotationUtils.existsJsonType(field)) {
             // 支持`@Type(type = "Json")`
             return "text";
         }
-        return "javaType:" + psiType.getPresentableText();
+        return "javaType:" + psiType.getName();
     }
 
 }
