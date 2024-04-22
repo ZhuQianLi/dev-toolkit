@@ -10,4 +10,6 @@ public interface JavaField {
 
     boolean isNullable();
 
+    boolean existAnnotation(String annotation);
+
 }

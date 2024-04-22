@@ -36,4 +36,9 @@ public class PsiFieldImpl implements JavaField, JavaEnumConstant {
         return psiField.getAnnotation("@Nullable") != null;
     }
 
+    @Override
+    public boolean existAnnotation(String annotation) {
+        return psiField.getAnnotation(annotation) != null;
+    }
+
 }

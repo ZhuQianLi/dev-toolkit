@@ -104,14 +104,14 @@ public class GenerateEntityTableSqlService {
         // 支持`@Nullable`
         String nullable = field.isNullable() ? "default null" : "not null";
         // 支持`@GeneratedValue(strategy = GenerationType.IDENTITY)`
-        String autoIncrement = PsiAnnotationUtils.existsGeneratedValue(field) ? "auto_increment" : EMPTY;
+        String autoIncrement = field.existAnnotation("javax.persistence.GeneratedValue") ? "auto_increment" : EMPTY;
         // 支持注释、支持`@see`
         String comment = buildColumnComment(field);
         // trade_id bigint unsigned not null auto_increment comment "ref:trade.tid, 订单id"
         return String.format("%s %s %s %s %s,\n", field_name, mysqlType, nullable, autoIncrement, comment);
     }
 
-    private String buildColumnComment(PsiField field) {
+    private String buildColumnComment(JavaField field) {
         List<String> commentDescriptions = PsiDocCommentUtils.extractCommentDescription(field);
         if (isNotEmpty(commentDescriptions)) {
             List<String> atSeeTagValues = PsiDocCommentUtils.extractCommentTagForAtSee(field);
