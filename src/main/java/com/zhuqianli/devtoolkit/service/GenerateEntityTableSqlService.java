@@ -102,7 +102,7 @@ public class GenerateEntityTableSqlService {
 
         String mysqlType = psiTypeToMysqlType(field);
         // 支持`@Nullable`
-        String nullable = PsiAnnotationUtils.existsNullable(field) ? "default null" : "not null";
+        String nullable = field.isNullable() ? "default null" : "not null";
         // 支持`@GeneratedValue(strategy = GenerationType.IDENTITY)`
         String autoIncrement = PsiAnnotationUtils.existsGeneratedValue(field) ? "auto_increment" : EMPTY;
         // 支持注释、支持`@see`
