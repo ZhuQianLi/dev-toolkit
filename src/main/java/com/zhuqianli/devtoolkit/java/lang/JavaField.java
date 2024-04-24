@@ -6,6 +6,8 @@ public interface JavaField {
 
     JavaType getType();
 
+    JavaDocComment getDocComment();
+
     boolean isStatic();
 
     boolean isNullable();

@@ -2,9 +2,6 @@ package com.zhuqianli.devtoolkit.service;
 
 import com.zhuqianli.devtoolkit.java.lang.*;
 import com.zhuqianli.devtoolkit.java.lang.psi.PsiClassImpl;
-import com.zhuqianli.devtoolkit.java.lang.psi.PsiClassLoaderImpl;
-import com.zhuqianli.devtoolkit.java.lang.psi.PsiMethodImpl;
-import com.zhuqianli.devtoolkit.utils.JavaLangUtils;
 import com.zhuqianli.devtoolkit.utils.PsiAnnotationUtils;
 import com.zhuqianli.devtoolkit.utils.PsiDocCommentUtils;
 import com.zhuqianli.devtoolkit.utils.StringUtils;
@@ -16,12 +13,9 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiType;
 import org.apache.commons.compress.utils.Sets;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -72,12 +66,12 @@ public class GenerateEntityTableSqlService {
     /**
      * 获取class第一行注释，作为表注释
      */
-    private String buildTableComment(PsiClass psiClass) {
-        List<String> classComments = PsiDocCommentUtils.extractCommentDescription(psiClass);
+    private String buildTableComment(JavaClass javaClass) {
+        List<String> classComments = javaClass.getDocComment().getDescContent();
         return classComments.isEmpty() ? EMPTY : String.format("comment='%s'", classComments.get(0));
     }
 
-    private String buildSqlForUniqueKey(PsiClass psiClass, String tableName) {
+    private String buildSqlForUniqueKey(JavaClass psiClass, String tableName) {
         List<String> uniqueKey = PsiAnnotationUtils.extractUniqueKey(psiClass);
         if (uniqueKey.isEmpty()) {
             return EMPTY;
@@ -112,9 +106,10 @@ public class GenerateEntityTableSqlService {
     }
 
     private String buildColumnComment(JavaField field) {
-        List<String> commentDescriptions = PsiDocCommentUtils.extractCommentDescription(field);
+        JavaDocComment docComment = field.getDocComment();
+        List<String> commentDescriptions = docComment.getDescContent();
         if (isNotEmpty(commentDescriptions)) {
-            List<String> atSeeTagValues = PsiDocCommentUtils.extractCommentTagForAtSee(field);
+            List<String> atSeeTagValues = docComment.getTagContent("@see");
             if (isNotEmpty(atSeeTagValues)) {
                 // comment "ref:trade.tid, 订单id"
                 return String.format("comment 'ref:%s, %s'", atSeeTagValueToMysqlComment(atSeeTagValues.get(0)), commentDescriptions.get(0));

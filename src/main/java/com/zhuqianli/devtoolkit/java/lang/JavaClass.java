@@ -12,6 +12,8 @@ public interface JavaClass {
 
     List<JavaMethod> getMethods();
 
+    JavaDocComment getDocComment();
+
     boolean isEnum();
 
     List<JavaEnumConstant> getEnumConstants();

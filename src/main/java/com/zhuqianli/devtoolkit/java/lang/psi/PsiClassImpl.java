@@ -1,9 +1,6 @@
 package com.zhuqianli.devtoolkit.java.lang.psi;
 
-import com.zhuqianli.devtoolkit.java.lang.JavaClass;
-import com.zhuqianli.devtoolkit.java.lang.JavaEnumConstant;
-import com.zhuqianli.devtoolkit.java.lang.JavaField;
-import com.zhuqianli.devtoolkit.java.lang.JavaMethod;
+import com.zhuqianli.devtoolkit.java.lang.*;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiEnumConstant;
 
@@ -36,6 +33,11 @@ public class PsiClassImpl implements JavaClass {
 
     public List<JavaMethod> getMethods() {
         return Arrays.stream(psiClass.getMethods()).map(PsiMethodImpl::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public JavaDocComment getDocComment() {
+        return new PsiDocCommentImpl(psiClass.getDocComment());
     }
 
     @Override

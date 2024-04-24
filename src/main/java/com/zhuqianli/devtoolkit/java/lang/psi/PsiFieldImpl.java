@@ -1,11 +1,19 @@
 package com.zhuqianli.devtoolkit.java.lang.psi;
 
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.javadoc.PsiDocComment;
+import com.intellij.psi.javadoc.PsiDocToken;
+import com.zhuqianli.devtoolkit.java.lang.JavaDocComment;
 import com.zhuqianli.devtoolkit.java.lang.JavaEnumConstant;
 import com.zhuqianli.devtoolkit.java.lang.JavaField;
 import com.zhuqianli.devtoolkit.java.lang.JavaType;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiModifierList;
+import org.apache.commons.compress.utils.Lists;
+
+import java.util.Collections;
+import java.util.List;
 
 public class PsiFieldImpl implements JavaField, JavaEnumConstant {
 
@@ -23,6 +31,11 @@ public class PsiFieldImpl implements JavaField, JavaEnumConstant {
     @Override
     public JavaType getType() {
         return new PsiTypeImpl(psiField.getType());
+    }
+
+    @Override
+    public JavaDocComment getDocComment() {
+        return new PsiDocCommentImpl(psiField.getDocComment());
     }
 
     @Override
