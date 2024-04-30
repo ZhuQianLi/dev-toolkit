@@ -85,8 +85,7 @@ public class PsiAnnotationUtils {
         }
         PsiAnnotationMemberValue uniqueConstraints = tableAnnotation.findAttributeValue("uniqueConstraints");
         if (uniqueConstraints instanceof PsiAnnotation) {
-            PsiAnnotationMemberValue columnNames = ((PsiAnnotation) uniqueConstraints).findAttributeValue(
-                    "columnNames");
+            PsiAnnotationMemberValue columnNames = ((PsiAnnotation) uniqueConstraints).findAttributeValue("columnNames");
             if (columnNames == null) {
                 return Collections.emptyList();
             }

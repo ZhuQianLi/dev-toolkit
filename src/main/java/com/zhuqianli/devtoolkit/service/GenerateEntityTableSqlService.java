@@ -153,8 +153,7 @@ public class GenerateEntityTableSqlService {
             return "decimal(19, 2)";
         } else if (psiType.isEnum()) {
             return "varchar(50)";
-        } else if (PsiAnnotationUtils.existsJsonType(field)) {
-            // 支持`@Type(type = "Json")`
+        } else if (psiType.isCustom()) {
             return "text";
         }
         return "javaType:" + psiType.getName();

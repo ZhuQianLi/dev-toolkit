@@ -1,5 +1,7 @@
 package com.zhuqianli.devtoolkit.java.lang;
 
+import java.util.List;
+
 public interface JavaField {
 
     String getName();
@@ -11,6 +13,8 @@ public interface JavaField {
     boolean isStatic();
 
     boolean isNullable();
+
+    List<JavaAnnotation> getAnnotations();
 
     boolean existAnnotation(String annotation);
 

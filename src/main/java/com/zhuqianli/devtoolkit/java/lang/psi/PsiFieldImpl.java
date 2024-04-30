@@ -1,19 +1,14 @@
 package com.zhuqianli.devtoolkit.java.lang.psi;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.javadoc.PsiDocComment;
-import com.intellij.psi.javadoc.PsiDocToken;
-import com.zhuqianli.devtoolkit.java.lang.JavaDocComment;
-import com.zhuqianli.devtoolkit.java.lang.JavaEnumConstant;
-import com.zhuqianli.devtoolkit.java.lang.JavaField;
-import com.zhuqianli.devtoolkit.java.lang.JavaType;
+import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiModifierList;
-import org.apache.commons.compress.utils.Lists;
+import com.zhuqianli.devtoolkit.java.lang.*;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PsiFieldImpl implements JavaField, JavaEnumConstant {
 
@@ -47,6 +42,11 @@ public class PsiFieldImpl implements JavaField, JavaEnumConstant {
     @Override
     public boolean isNullable() {
         return psiField.getAnnotation("@Nullable") != null;
+    }
+
+    @Override
+    public List<JavaAnnotation> getAnnotations() {
+        return Arrays.stream(psiField.getAnnotations()).map(PsiAnnotationImpl::new).collect(Collectors.toList());
     }
 
     @Override
