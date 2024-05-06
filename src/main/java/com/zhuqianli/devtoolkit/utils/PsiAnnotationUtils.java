@@ -3,6 +3,7 @@ package com.zhuqianli.devtoolkit.utils;
 import com.intellij.lang.jvm.annotation.JvmAnnotationAttribute;
 import com.intellij.lang.jvm.annotation.JvmAnnotationConstantValue;
 import com.intellij.psi.*;
+import com.zhuqianli.devtoolkit.java.lang.JavaClass;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -78,7 +79,7 @@ public class PsiAnnotationUtils {
      *
      * @return ["userId", "tid"]
      */
-    public static List<String> extractUniqueKey(PsiClass psiClass) {
+    public static List<String> extractUniqueKey(JavaClass psiClass) {
         PsiAnnotation tableAnnotation = psiClass.getAnnotation("javax.persistence.Table");
         if (tableAnnotation == null) {
             return Collections.emptyList();
