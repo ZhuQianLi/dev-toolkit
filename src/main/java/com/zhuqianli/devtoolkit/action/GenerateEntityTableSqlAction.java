@@ -22,4 +22,17 @@ public class GenerateEntityTableSqlAction extends AnAction {
         IntellijUtils.showMessage(event.getProject(), "生成表结构成功", "已复制到剪贴板");
     }
 
+    @Override
+    public void update(@NotNull AnActionEvent event) {
+        DataContext dataContext = event.getDataContext();
+        PsiElement psiElement = CommonDataKeys.PSI_ELEMENT.getData(dataContext);
+        if (psiElement instanceof PsiClass) {
+            PsiClass psiClass = (PsiClass) psiElement;
+            if (psiClass.getAnnotation("javax.persistence.Entity") != null) {
+                event.getPresentation().setEnabled(true);
+                return;
+            }
+        }
+        event.getPresentation().setEnabled(false);
+    }
 }
