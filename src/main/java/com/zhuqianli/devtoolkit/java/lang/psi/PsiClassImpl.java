@@ -50,4 +50,9 @@ public class PsiClassImpl implements JavaClass {
         return Arrays.stream(psiClass.getAllFields()).filter(f -> f instanceof PsiEnumConstant).map(PsiFieldImpl::new).collect(Collectors.toList());
     }
 
+    @Override
+    public List<JavaAnnotation> getAnnotations() {
+        return Arrays.stream(psiClass.getAnnotations()).map(PsiAnnotationImpl::new).collect(Collectors.toList());
+    }
+
 }

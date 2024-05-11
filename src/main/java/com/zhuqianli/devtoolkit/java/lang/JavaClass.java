@@ -18,4 +18,6 @@ public interface JavaClass {
 
     List<JavaEnumConstant> getEnumConstants();
 
+    List<JavaAnnotation> getAnnotations();
+
 }
