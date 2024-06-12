@@ -79,6 +79,7 @@ public class PsiAnnotationUtils {
      * 提取类上的唯一约束字段
      * * @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"userId", "tid"}))
      *
+     *
      * @return ["userId", "tid"]
      */
     public static List<String> extractUniqueKey(JavaClass psiClass) {
