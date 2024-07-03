@@ -87,8 +87,6 @@ public class PsiAnnotationUtils {
         if (annotations.isEmpty()) {
             return Collections.emptyList();
         }
-        List<JavaAnnotation> uniqueConstraints1 = annotations.stream().filter(an -> an.getName().equals("uniqueConstraints")).collect(Collectors.toList());
-        PsiAnnotationMemberValue uniqueConstraints = tableAnnotation.findAttributeValue("uniqueConstraints");
 //        if (uniqueConstraints instanceof PsiAnnotation) {
 //            PsiAnnotationMemberValue columnNames = ((PsiAnnotation) uniqueConstraints).findAttributeValue("columnNames");
 //            if (columnNames == null) {
