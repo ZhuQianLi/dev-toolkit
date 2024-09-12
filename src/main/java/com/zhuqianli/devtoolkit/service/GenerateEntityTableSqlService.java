@@ -85,7 +85,7 @@ public class GenerateEntityTableSqlService {
     }
 
     private String buildTableName(JavaClass psiClass) {
-        String className = psiClass.getName();
+        String className = psiClass.getSimpleName();
         assert className != null;
         return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, className);
     }

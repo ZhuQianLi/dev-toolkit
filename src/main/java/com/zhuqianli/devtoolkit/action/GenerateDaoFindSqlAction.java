@@ -1,15 +1,11 @@
 package com.zhuqianli.devtoolkit.action;
 
-import com.zhuqianli.devtoolkit.service.GenerateDaoFindSqlService;
-import com.zhuqianli.devtoolkit.utils.IntellijUtils;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.zhuqianli.devtoolkit.service.GenerateDaoFindSqlService;
+import com.zhuqianli.devtoolkit.utils.IntellijUtils;
 import org.jetbrains.annotations.NotNull;
-
 
 public class GenerateDaoFindSqlAction extends AnAction {
 
@@ -35,4 +31,10 @@ public class GenerateDaoFindSqlAction extends AnAction {
         }
         event.getPresentation().setEnabled(false);
     }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
+    }
+
 }

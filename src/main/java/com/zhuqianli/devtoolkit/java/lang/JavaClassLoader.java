@@ -1,6 +1,6 @@
 package com.zhuqianli.devtoolkit.java.lang;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public interface JavaClassLoader {
 

@@ -7,7 +7,7 @@ import com.intellij.psi.javadoc.PsiDocToken;
 import com.zhuqianli.devtoolkit.java.lang.JavaDocComment;
 import org.apache.commons.compress.utils.Lists;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 

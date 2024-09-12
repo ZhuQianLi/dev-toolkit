@@ -1,12 +1,9 @@
 package com.zhuqianli.devtoolkit.action;
 
-import com.zhuqianli.devtoolkit.service.InsertNotNullCodeService;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.zhuqianli.devtoolkit.service.InsertNotNullCodeService;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -31,6 +28,11 @@ public class AddNotNullCodeAction extends AnAction {
             }
         }
         event.getPresentation().setEnabled(false);
+    }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
     }
 
 }

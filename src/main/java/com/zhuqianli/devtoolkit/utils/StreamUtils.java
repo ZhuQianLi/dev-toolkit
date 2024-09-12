@@ -5,8 +5,8 @@ import com.google.common.collect.Streams;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
+
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -177,7 +177,7 @@ public class StreamUtils {
     }
 
     @Nullable
-    public static <T> T findFirst(@Nonnull Collection<T> collection, Predicate<T> predicate) {
+    public static <T> T findFirst(Collection<T> collection, Predicate<T> predicate) {
         List<T> ts = collection.stream().filter(predicate).collect(Collectors.toList());
         return CollectionUtils.isEmpty(ts) ? null : ts.get(0);
     }
