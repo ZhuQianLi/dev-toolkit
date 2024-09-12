@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.zhuqianli"
-version = "20240812"
+version = "20240912"
 
 repositories {
     mavenCentral()
