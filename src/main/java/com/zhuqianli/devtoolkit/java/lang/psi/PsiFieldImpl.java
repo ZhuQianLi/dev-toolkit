@@ -41,7 +41,7 @@ public class PsiFieldImpl implements JavaField, JavaEnumConstant {
 
     @Override
     public boolean isNullable() {
-        return psiField.getAnnotation("@Nullable") != null;
+        return psiField.hasAnnotation("org.springframework.lang.Nullable") || psiField.hasAnnotation("javax.annotation.Nullable");
     }
 
     @Override
